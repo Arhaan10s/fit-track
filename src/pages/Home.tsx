@@ -1,12 +1,15 @@
 import { useState } from "react";
 import useChallenges from "../hooks/useChallenge";
 import { ChallengeProps } from "./Challenge";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { challenges, removeChallenge, updateChallenge } = useChallenges(); // hooks for displaying ,updating,removing challenges
   const [editingChallenge, setEditingChallenge] = useState<number | null>(null); //state for editing challenge 
   const [editFormValues, setEditFormValues] = useState<Partial<ChallengeProps>>({}); //state for editing existing form values
   const [filterStatus, setFilterStatus] = useState<'All' | 'Active' | 'Missed'>('All');// state to filter the challenges based on the status
+
+  const navigate = useNavigate();
 
   const handleEdit = (id: number) => {
     const challengeToEdit = challenges.find((challenge) => challenge.id === id);
@@ -42,6 +45,12 @@ const Home = () => {
   const filteredChallenges = challenges.filter((challenge) => 
     filterStatus === 'All' ? true : challenge.status === filterStatus
   ).sort((a) => (a.status === "Active" ? -1 : 1));; // sorting to make active challenge come first
+
+
+  const handleViewNavigate=(id:number)=>{
+    navigate(`view/${id}`);
+  }
+
 
   return (
     <div id="challenge">
@@ -119,6 +128,7 @@ const Home = () => {
                     <td className="container">
                       <button onClick={() => handleEdit(challenge.id)}>Edit</button>
                       <button onClick={() => removeChallenge(challenge.id)}>End</button>
+                      <button onClick={()=>handleViewNavigate(challenge.id)}>View Progress</button>
                     </td>
                   </>
                 )}
